@@ -1,0 +1,35 @@
+Events are an essential part of the Bukkit API. The Sve Bukkit Interface contains one function for events, ##registereventhandler##.
+
+##registereventhandler(eventgroup, eventname, callback)##
+
+A Sve program contains usually one event group named after the program. An event group can contain only one handler for every event.
+
+<<code ruby>>
+reh = registereventhandler
+
+## text will be printed twice
+reh("group1", "block.BlockPlaceEvent", def (e) { print::"block placed" })
+reh("group2", "block.BlockPlaceEvent", def (e) { print::"block placed" })
+
+## text will be printed only once
+reh("group", "block.BlockPlaceEvent", def (e) { print::"block placed" })
+reh("group", "block.BlockPlaceEvent", def (e) { print::"block placed" })
+<</code>>
+
+Event name is the name of the event class. If event is in package ##org.bukkit.event## that can be left out. In other words, if event is not found it is assumed to be in the ##org.bukkit.event## package. Subpackage has to be still declared.
+
+Callback takes one argument, the event.
+
+== Examples ==
+
+The code below prevents placing stone.
+
+<<code ruby>>
+material = static("org.bukkit.Material")
+
+registereventhandler("example.sve", "block.BlockPlaceEvent", def (e) {
+	if: e.getBlock().getType() == material.STONE {
+		e.setCancelled(true)
+	}
+})
+<</code>>

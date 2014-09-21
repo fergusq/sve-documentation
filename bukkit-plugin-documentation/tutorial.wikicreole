@@ -1,0 +1,359 @@
+**See also: [[Timers|Timers]] · [[Events]] · [[Foreach loop]] · [[Naming conventions]] · [[Svefiles and include]] · [[Command blocks]]**
+
+= Sve language =
+
+== Variables and data types ==
+
+There are five important datatypes in Sve: number, string, bool, table and function. Rare datatypes nfunction and userdata are not discussed in this document.
+
+Number is floating pointer datatype and equivalent to Java's double. Strings are in UTF-8 format. Boolean constants are ##true## and ##false##. ##nil## is false.
+
+Tables are complex data structures and have many features. They are basically hash maps. Keys are always strings, if a number is given it is converted to a string. Word **array** is used as a synonym to table.
+
+=== Constants ===
+
+==== Number constants ====
+
+Number constants are in decimal format. They can contain decimals (0.435) or be in sciencific format (like 0.435e34). ##Infinity## and ##NaN## are number constants.
+
+==== String constants ====
+
+Strings are in UTF-8 format. They can contain escaped characters Escape character is ##\##.
+
+One word string can also be in the key format: ##:key##.
+
+<<code ruby>>
+"A normal string"
+
+:key_format
+
+"A" == :A
+<</code>>
+
+==== Table values ====
+
+Table values can be either in **table format** or **list format**.
+<<code perl>>
+# table format
+tbl = { key = value, key1 = value2 }
+
+# list format
+list = [value1, value2]
+<</code>>
+In list format keys are given to variables. Value 1 gets key ##0##. Value 2 gets key ##1##.
+
+==== Boolean constants and the nil constant ====
+
+Boolean constants are ##true## and ##false##. The nil constant, ##nil##, is a equivalent to null in Java or Javascript.
+
+=== Declaring variables ===
+
+In Sve, undefined variables are an error. To define a variable a value must be assigned to it.
+<<code ruby>>
+var = value
+
+i = 3
+msg = "Hello world!"
+car = { topspeed=3, color=:red }
+<</code>>
+
+Inside functions ##local## keyword should be used when declaring new variables. If there is a variable of the same name on the top level, a value is assigned to it instead of declaring a new variable.
+
+<<code perl>>
+def: myfunction() {
+    local msg = "Hello world!"
+    # ...
+}
+
+# without local keyword
+msg = nil
+def: setmsg(newmsg) {
+    msg = newmsg
+}
+<</code>>
+
+=== Number increment and decrement statements ===
+
+Shortcut syntaxes ##variable++## and ##variable--## increment and decrement number variables by one. Expression ##variable++## returns the original value and ##+ +variable## the incremented value.
+
+=== Table accessing and modifying expressions ===
+
+##table[key]## is the primary way to get a value from a table. Shortcut syntax ##table.key## can be used and is equivalent to ##table["key"]## (similar to one in Lua).
+
+Modifying a table is similar to modifying a variable.
+<<code perl>>
+tbl = { a=1, b=2 }
+tbl.a = 2
+tbl["b"] = 3
+<</code>>
+
+== Statements and control structures ==
+
+=== Semicolons ===
+
+Semicolons are not required, but can be used in order to prevent ambiguities. Programmer can decided whether to use semicolons or not.
+
+Following ambiguities are solved using semicolons:
+
+<<code ruby>>
+# a = b(c+d)->e
+a = b
+;(c+d)->e
+
+# a = $$.b = c
+a = $;
+$.b = c
+<</code>>
+
+=== Blocks ===
+
+A block starts with ##{## and ends with ##}##. A block is considered to be a single statement.
+
+=== If ===
+
+<<code perl>>
+if: condition {
+    # action 1
+} else: {
+    # action 2
+}
+<</code>>
+
+If condition evaluates to ##true##, the first action is executed. Otherwise the second action is executed. Else-block is optional.
+
+=== While and For ===
+
+Code inside a while loop is executed as long as the condition is true.
+<<code perl>>
+while: condition {
+    # code
+}
+<</code>>
+
+Code inside a for loop is executed as long as the condition is true. Initialization is executed before the loop and incrementing is executed every time after the code is executed.
+<<code perl>>
+for: initialization, condition, incrementation {
+    # code
+}
+<</code>>
+Example:
+<<code perl>>
+for: local i = 0, i < 10, i++ {
+    print(i)
+}
+<</code>>
+
+== Functions ==
+
+Functions are first class values in Sve. All functions are anonymous and can be assigned to a variables.
+
+A "named" function is declared using a shortcut syntax.
+<<code ruby>>
+def: function_name(parameters) {
+    # code
+}
+<</code>>
+Which is equivalent to:
+<<code ruby>>
+function_name = def(parameters) {
+    # code
+}
+<</code>>
+
+A value is returned using return keyword.
+<<code ruby>>
+def: squaresum(value1, value2) {
+    return value1*value1 + value2*value2
+}
+<</code>>
+
+A shortcut syntax can be used for one line math functions.
+<<code ruby>>
+def: squaresum(v1, v2) = v1*v1 + v2*v2
+<</code>>
+
+=== Function calling ===
+
+There are three function calling syntaxes. First, parentheses. ##function(args)##. Second, ##::##-operator: ##function::arg##, which is handy for printing text. Third, arrow operator: ##arg1->function(rest_of_arguments)##. Arrow resembles method calling and is sometimes used with conversion functions. ##20->ticks## returns value of 20 seconds in ticks.
+
+<<code ruby>>
+print("hello")
+print::"hello"
+"hello"->print
+
+tell(@m, "hello")
+@m->tell("hello")
+
+a=[1,2,3]
+len(a)
+a->len
+<</code>>
+
+== Important Sve functions ==
+
+|=Function|=Type|=Description|
+|keys(tbl)|	table -> table|	Returns an array which contains all keys of table ##tbl##.
+|len(arr)|	table -> number|		Returns the number of elements with a numerical key in array ##arr##. To get the size of a table, use ##len(tbl->keys)##.
+|rnd(n)|	number -> number|	Creates a random number in range ##0..n-1##
+|type(obj)|	any -> string|	Returns the name of the type of ##obj##. (either ##bool##, ##function##, ##nil##, ##number## or ##table##)
+
+
+=== Sve function documentation ===
+
+There are many sve functions, you can list all sve function help texts using function allhelp (from chat ##/sve allhelp()##). A single help text can be viewed using help function (from chat ##/sve help("function_name")##).
+
+== Synthetic variables ==
+
+=== Scope variables ===
+
+In sve, scopes are tables that are used to store variables. There are two important scope variables: the global scope ($) and the local scope ($$). The global scope contains all variables that are declared at the top level. Not inside any block. The local scope contains all variables in the local (current) scope and all parent scopes including the global scope.
+
+<<code perl>>
+hello = "hello world"
+print($["hello"])  # -> "hello world" hello is declared at the top level
+print($$["hello"]) # -> "hello world" the local scope is the global scope in top level
+
+i = 1
+{
+    local i = 3 # local keyword is used to create a new variable, it is not required at the top level
+
+    print($["i"])  # -> 1
+    print($$["i"]) # -> 3
+}
+<</code>>
+
+=== Modifying scopes ===
+
+Scopes can be modified using these functions. Remember, scopes are tables and these function work with both tables and scopes.
+
+|=Function|=Type|=Description|
+|define(scope, index, value)|table, string, any ->|Creates a new variable or modifies an existing in a specific scope. Super scopes are ignored. Can be compared to the local keyword.|
+|undefine(table, index)|table, string ->|Removes an entry from a table. Works with scopes too.|
+|defined(table, index)|table, string -> bool|Returns true if table contains an index. Works with scopes too.|
+|setsup(scope, scope)|table, table -> table|Sets the super scope of a scope.|
+|getsup(scope)|table -> table|Returns the super scope of a scope.|
+|setpt(scope, scope)|table, table -> table|Sets the prototype scope of a scope.|
+|getpt(scope)|table ->  table|Returns the prototype scope of a scope.|
+|setptf(scope, function)|table, function ->|Sets the prototype/index function of a scope.|
+|getptf(scope)|table -> function|Returns the prototype/index function of a scope.|
+|setls(function, scope)|function, table ->|Sets function declaration scope.|
+|getls(function)|function -> table|Gets the declaration scope of a function.|
+
+Every table (and scope) has a super table. If an index is not found from the table, it is assumed to be in the super table. A prototype table is like the super table, except that it is read-only.
+
+<<code perl>>
+tbl = {}
+sup = {a=1, b=2}
+setsup(tbl, sup)
+
+print(tbl.a) # -> 1
+print(sup.a) # -> 1
+print(defined(tbl, "a")) # -> false
+
+tbl.a = 2
+print(tbl.a) # -> 2
+print(sup.a) # -> 2
+print(defined(tbl, "a")) # -> false
+
+# ,
+
+tbl = {}
+pt = {a=1, b=2}
+setpt(tbl, pt)
+
+print(tbl.a) # -> 1
+print(pt.a) # -> 1
+print(defined(tbl, "a")) # -> false
+
+tbl.a = 2
+print(tbl.a) # -> 2
+print(pt.a) # -> 1
+print(defined(tbl, "a")) # -> true
+<</code>>
+
+Prototype function is called if an index is not found from super or prototype table. A prototype function takes the index as an argument ant returns it's value. A table which has a prototype function can't trigger an index not found exception.
+
+
+
+== Synthetic parameters ==
+
+Generated parameters begin with character $. They can be accessed using scope variables.
+
+|=Variable|=Using scope variable|=Type|=Description|
+|$args|##$$["$args"]##|table|An array of arguments|
+|$parent|##$$["$parent"]##|scope|The scope which function is called from|
+|$obj|##$$["$obj"]##|any|The object which contains the function, available only when function is called in style ##obj.function()## in which case it contains ##obj##|
+
+$parent can be used to modify caller's environment. For example, this removes $-characters from synthetic parameters:
+<<code perl>>
+def: removedollar {
+    local parent = $$["$parent"]
+    define(parent, "parent", parent["$parent"]) # define-function is used in place of the local-keyword when modifying scopes
+    define(parent, "args", parent["$args"])
+    if: defined(parent, "$obj") # $obj does not exist if function is called in a wrong way
+        define(parent, "obj", parent["$obj"])
+}
+
+def: printsynthetics {
+    removedollar()
+    print::keys(parent) # scope variable should not be printed
+    print::args
+    if: defined($$, "obj") print::obj
+}
+
+{
+    local i = 1
+    printsynthetics()
+}
+<</code>>
+
+= Sve for Bukkit =
+
+== Built-in functions ==
+
+|=Function|=Type|=Description|
+|broadcast(msg)|	string -> nil|	Broadcasts a message
+|print(msg)|	string -> nil|	Sends a message to all players
+|tell(player, msg)|	player or string, string -> nil|	Sends a message to a player
+|give(player, itemid)|	player or string, number -> nil|	Gives an item to the player
+|exec(player, cmd)|	player or string, string -> number|	Executes the command as a player
+|system(cmd)|	string -> nil|	Executes the command
+|hasperm(player, perm)|	player or string, string -> boolean|	Does a player have a permission?
+|players()|	( ) -> table(player)|	Current players on the server
+|worlds()|	( ) -> table(world)|	Current worlds
+|location(x, y, z, world)|	number, number, number, world -> location|	Creates a new org.bukkit.Location object
+|vector(x, y, z)|	number, number, number -> vector|	Creates a new org.bukkit.util.Vector object
+|registereventhandler(event, handler)|	string, function -> nil|	Registers an event handler
+|getServer()|->server|Returns the server (org.bukkit.Bukkit)
+
+== Minecraft integration ==
+
+Variables @m, @a and @w and related functions players() and worlds() are used to get the current player (@m), all players on the server (@a) and all worlds (@w). @m is a players object, and @a and @w are arrays.
+
+Methods of Java objects can be accessed. For example, @m is a CraftPlayer object and contains all methods from org.bukkit.entity.Player. A list of these methods is found from bukkit api documentation ([[http://jd.bukkit.org/rb/apidocs/|here]]).
+
+As Sve is a typeless language and does not support method overloading, method names contain also types of the parameters. Method sendMessage(String) is called in sve code sendMessage_String. To send a message to a player: ##@m.sendMessage_String("msg")##. If method is not overloaded, it can be used also without type information.
+
+<<code perl>>
+if: len(@a) != 0 {
+    local player = @a[rnd(@a->len)] # random player
+    if: !player.isOnGround() {
+        player.sendMessage_String("Hey, do you fly?!")
+    }
+}
+<</code>>
+
+=== Java Interface functions ===
+
+**getClass(name)** returns a java.lang.class object. ##getClass("java.lang.Object")## returns the same object as ##java.lang.Object.class## in java.
+
+**static(name)** returns a table that contains all static fields (including enum constants) of a class. ##static("java.lang.Math")## returns a table that contains constants ##E## and ##PI##.
+
+It is recommended to "import" enums at the begin of a svefile:
+<<code perl>>
+material = static("org.bukkit.Material")
+
+# ...
+
+block_material = material.STONE
+<</code>>

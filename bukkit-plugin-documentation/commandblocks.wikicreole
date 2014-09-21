@@ -1,0 +1,33 @@
+If sve code is called from command blocks, @m -variable is a CommandBlockSender instead of a CraftPlayer.
+
+== Command block location ==
+
+@m.getBlock() returns a block object.
+<<code perl>>
+local b = @m.getBlock()
+local x = b.getX()
+local y = b.getY()
+local z = b.getZ()
+<</code>>
+
+== Players near ==
+
+Use ##allat##-function. Foreach can be used to iterate over all players.
+
+<<code perl>>
+b=@m.getBlock()
+foreach(allat(b.getX(),b.getY(),b.getZ(),b.getWorld(),radius))::def (p) { ... }
+<</code>>
+
+You can create a function which does that automatically if you want:
+<<code perl>>
+def: forallat(radius) {
+    local b=@m.getBlock()
+    return foreach(allat(b.getX(),b.getY(),b.getZ(),b.getWorld(),radius))
+}
+
+# Usage:
+forallat(5)::def(p) { ... }
+<</code>>
+
+Put function code to a svefile, for example commandblocks.sve, add a svefile declaration to all.sve, and reload svefiles using command ##/svefile svefiles/all.sve##.

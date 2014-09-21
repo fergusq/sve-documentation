@@ -1,0 +1,110 @@
+Sve code is typically divided into sve files. A sve file does one job and does it well. File names are often short and contain only one word. They follow normal sve [[naming conventions]].
+
+== Include function ==
+
+##include(filename)##
+
+Executes sve code from a file. If filename doesn't contains full path, the file is assumed to be in the server root folder. The root folder is the folder where the plugins folder is. (See pictures of folder structure at the main page)
+
+If the file is in the svefiles folder:
+
+<<code ruby>>
+include::"svefiles/file.sve"
+<</code>>
+
+If the file is in the plugins folder:
+
+<<code ruby>>
+include::"plugins/file.sve"
+<</code>>
+
+As it is important where the file is, authors of sve programs should always inform server administrators where to put svefiles.
+
+== Require function ==
+
+##require(filename)##
+
+Same as include, but the file is loaded only once even if require is called multiple times.
+
+<<code ruby>>
+require::"path/file.sve"
+<</code>>
+
+== Svefile hierarchy ==
+
+There is no right way to order svefiles, the provided sve library for example uses flat hierarchy.
+
+=== Parent-child hierarchy aka bottom to top ===
+
+A one svefile is the parent of all other svefiles. A parent file contains child files, included on the begin of the parent. Childred can use the functions of the parent file, but the parent shouldn't use the functions of it's children.
+
+Parent:
+
+<<code ruby>>
+# parent.sve
+
+include::"child1.sve"
+include::"child2.sve"
+
+def: parent_function() {
+    # ...
+}
+<</code>>
+
+Child:
+
+<<code ruby>>
+# child1.sve
+
+def: child_function() {
+    # ...
+    parent_function()
+}
+<</code>>
+
+=== Dependecy based hierarchy aka top to bottom===
+
+Used in C, this is the most common hierarchy type.
+
+A svefile includes all depencies, svefiles which contain functions or variables it uses.
+
+Main svefile:
+
+<<code ruby>>
+# main.sve
+
+require::"library.sve"
+
+def: main_function() {
+    # ...
+    library_function()
+}
+<</code>>
+
+Library svefile:
+<<code ruby>>
+# library.sve
+
+def: library_function() {
+    # ...
+}
+<</code>>
+
+=== Observations ===
+
+It is known that:
+
+# Parent-child hierarchy is good if there is one svefile which many other svefiles use.
+# Dependency hierarchy is goof if there is one svefile which needs many other svefiles.
+
+For the parent-child hierarchy:
+
+# One sve project / program / plugin can contain many svefiles, which do not belong to each other. Those svefiles do not need each other, but shared functions.
+# If the number of svefiles is small, they all can be included from a from svefile (as in the sve library). Thus it is not important to know which svefiles are depencies, as they all are included anyway.
+
+For the dependency hierarchy:
+
+# If a svefile is missing, the error message will be "file not found", not "function not found".
+# Access to the parent / library file is not required.
+
+These hierarchies can be used together. The sve programs use the parent-child hierarchy, and they can include libraries as depencies using the depency based hierarchy.

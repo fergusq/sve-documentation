@@ -1,0 +1,70 @@
+Timers are a very handfull feature of the Minecraft integration. A timer executes a function again and again.
+
+An example timer, a very dangerous demolishing machine, that uses Essentials' fireball command to send fireballs every tick.
+
+{{{
+local tim = timer(def exec(:USERNAME, "fireball"), 1)
+}}}
+
+Remember, store the timer object ALWAYS to a variable. Otherwise you won't be able to stop it. ##/svestop## command stops all timers. Use only for emergency.
+
+== Usage ==
+
+##timer(callback, interval)##
+
+Callback is an anonymous function. Interval is in ticks. Conversion functions from threads.sve can be used to transfer seconds to ticks and vice versa.
+
+##local tim = timer(def { code here }, seconds->ticks)## example. ##local tim = timer(def {print::"spam"}, 10->ticks)##
+
+Stopping a timer is done using method ##timer.stop()##.
+
+{{{
+tim=timer(def {...}, 1)
+
+...
+
+tim.stop()
+}}}
+
+== Timers or events? ==
+
+Timers and events can be used for the same purpose: doing something on right conditions. For example, these two codes do basically the same thing, make player fly when they press the sneak key:
+
+{{{
+pname = "USERNAME"
+registereventhandler("org.bukkit.event.player.PlayerToggleSneakEvent", def (e) {
+    sneakhandler(e)
+})
+def: sneakhandler(e) {
+    if: e.getPlayer().getDisplayName() == pname && e.isSneaking() {
+        e.getPlayer().setVelocity(vector(0,1,0))
+    }
+}
+}}}
+{{{
+pname = "USERNAME"
+timer(def {
+    local p = players()[pname]
+    if: p.isSneaking() {
+        p.setVelocity(vector(0,1,0))
+    }
+}, 1)
+}}}
+
+The main advantage of timers is that they can be stopped whenever you like and are clear looking. You can't stop an event handler. You can put a condition to the handler. Timers can be also have a specific interval.
+
+== Wait function ==
+
+The wait function implemented in threads.sve can be used for timed, but not repeating, actions.
+
+##wait(ticks, callback)##
+
+The following script makes a pling pling -sound.
+
+{{{
+# import Sound -enum
+sound = static("org.bukkit.Sound")
+
+@m.world.playSound(@m.getLocation(), sound.NOTE_PLING, 1, 1.7)
+wait(0.1->ticks, def @m.world.playSound(@m.getLocation(), sound.NOTE_PLING, 1, 2))
+}}}

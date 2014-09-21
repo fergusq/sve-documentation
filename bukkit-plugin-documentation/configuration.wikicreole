@@ -1,0 +1,11 @@
+Default configuration file:
+<<code yaml>>
+sve:
+  path:
+    - svefiles/
+    - plugins/Sve/
+  autorun:
+    - svefiles/all.sve
+<</code>>
+
+With search path you can specify folder which the interpreter searches svefiles from. Autorun section contains svefile which are automatically executed when the server starts. It can contain directories too, in which case all svefiles in the directory are executed (but not those in subdirectories).

@@ -1,0 +1,87 @@
+Sve is a dynamic scripting language comparable to Lua and JavaScript. Sve can be used for making more intelligent redstone systems, minigames and small plugins. It is also a handy calculator.
+
+<<center>><<size 24px>>[[Sve tutorial|Tutorial]] · [[Configuration]] · [[Examples]]<</size>><</center>>
+
+== Quick start ==
+# Download sve.zip.
+# Extract Sve.jar to the plugins folder.
+# Extract svefiles folder to the server root folder (the folder where the plugins folder is).
+# Execute command ##/svefile svefiles/all.sve##. It must be executed when server starts to load all libraries.
+# Read [[http://dev.bukkit.org/bukkit-plugins/sve/pages/sve-tutorial|the Sve tutorial]]
+
+Please see these pictures:
+* [[http://www.kaivos.org/minecraft/Screenshot%20from%202014-04-24%2020:58:48.png|the root folder]]
+* [[http://www.kaivos.org/minecraft/Screenshot%20from%202014-04-24%2020:59:12.png|##svefiles## folder]]
+
+See [[Examples]] for example programs. See also [[http://dev.bukkit.org/bukkit-plugins/svealias|alias.sve]], the first ever sve program released in bukkit.org.
+
+== Introduction to the Sve programming language ==
+
+Sve is a dynamic garbage collected scripting language.
+<<code perl>>
+ # variables
+ local a = 2
+ local b = a + 1
+ a++
+ 
+ # control structures
+ if: a == b {
+    print("a is b")
+ }
+ a = -4
+ while: a < b {
+     a++
+     print("a: " + a)
+ }
+ 
+ # functions
+ def: f {
+     print("in f()")
+     return 0
+ }
+ def: add2(n) {
+     return n + 2
+ }
+ f()
+ print(add2(3))
+<</code>>
+Sve is easy, just read more about it. [[http://dev.bukkit.org/bukkit-plugins/sve/pages/sve-tutorial|Sve tutorial]]
+
+== Example ==
+
+Lets players to send anonymous messages to the chat.
+<<code perl>>
+ registercommand("say", "svesay", def {
+ 	local command = ""
+ 	foreach($$["$args"])::def (arg) command = command + " " + arg
+ 	
+ 	foreach(@a)::def (p) {
+ 		if: hasperm(p, "svesay.spy") p.sendMessage_String("§5[§dchat.sve§5]§e " + @m + " said:§f" + command)
+ 		else: p.sendMessage_String("§5[§dRandom voice§5]§e" + command)
+ 	}
+ })
+<</code>>
+Svesay script uses **svecommands**, a way to give untrusted persons a limited access to sve. Above script registers one command, "say" which needs "svesay" permission. Everybody who has that permission can send anonymous messages using /svecommand -command.
+{{{
+/svecommand say The message is here.
+}}}
+Admins who have permission "svesay.spy" can see the message senders.
+
+$$["$args"] is an array, which contains all arguments given to the function. Foreach loop is used to concatenate all arguments together.
+
+== Commands and permissions ==
+
+* **/sve** <code> – executes sve code from chat – serverq.sve
+* **/svefile** <file path> – executes sve code from a file – serverq.svefile
+* **/svestop** – stops all sve threads (timers, see timer() function) – serverq.svestop
+* **/svecommand** <command name> <arguments> – runs a svecommand, must be registered using registercommand() function) – serverq.svecommand
+
+== Security ==
+Sve is designed to be used by administrators only. There are many functions which can be used to gain higher access. For example, ##system## function can be used to execute commands as the system (from console) and ##exec## function can be used to execute commands as an other player. There is no way to limit these commands to just admins.
+
+Functions can be removed from the environment by setting them to nil. In Sve functions are variables.
+{{{
+ system = nil
+ exec = nil
+}}}
+Remember, if there are dangerous functions in the environment do not give untrusted persons an access to Sve. Potentially dangerous functions are in addition to ##system## and ##exec## ##timer##, ##eval##,  ##getServer##, ##players## and ##worlds##. Methods of @m, @a and @w are also dangerous, as they can be used to modify players settings and environment.

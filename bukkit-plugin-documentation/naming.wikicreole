@@ -1,0 +1,65 @@
+Please follow these rules when naming sve variables and functions.
+
+=== Case rules ===
+
+# The general rule: all names are in the ##lowercase##. For example ##print##, ##string##, ##endvote##.
+# All constants are in the ##UPPER_CASE##.
+# All Java names are as in Java. For example ##getClass##, ##getServer##.
+
+=== Other rules ===
+
+# All public constants must have the name their svefile as a prefix. For example ##VOTE_PREFIX##, ##FLY_MAXTURN##.
+# All generated variables have an @ sign as a prefix. For example ##@a##, ##@m##.
+# All generated parameters have a $ sign as a prefix. For example ##$$["$args"]##, ##$$["$parent"]##.
+
+== Program name ==
+
+# The name of a sveprogram should be short and descriptive, one word long. It should be prefixed with "sve". For example, a program that protects things should be named "sveprotection".
+# All permissions should begin with the name of the program. Eg. "sveprotection.protect".
+# The name of a svefile should end with ".sve". Eg. "protection.sve".
+# If the program contains only one file, the actual file name should contain author's name to avoid name collisions. Eg. "fergusq-protection.sve"
+# If the program contains many svefiles, they should be all stored to a folder which is named after the program. Eg. "fergusq-sveprotection"
+# The event group of the program should be named after the file name. Eg. "protection.sve".
+# All public constants should begin with the name of the file. Eg. "##PROTECTION_RANGE##".
+
+== Namespaces and subfunctions ==
+
+Because names in sve are supposed to be short, there is a great probability that two names are the same. The best ways to avoid name collisions is using namespaces and subfunctions.
+
+=== Namespaces ===
+
+A namespace is a table which contains functions and variables.
+
+<<code ruby>>
+# create a new namespace 'protection'
+protection = {}
+
+# adding variables to a namespace
+protection.range = 2
+protection.areas = []
+
+# functions
+{
+    def: protection.protectarea(area) {
+        if: type(area) == :string
+            area = areas[area]
+    }
+
+    setsup(protection, $)
+    setsup($$, protection) # makes variables and functions of protection usable without 'protection.' prefix
+}
+<</code>>
+
+=== Subfunctions ===
+
+Subfunctions are functions which can be only accessed inside one function.
+
+<<code ruby>>
+def: f1 {
+    def: f2 {
+        # ...
+    }
+    # ...
+    f2()
+}
+<</code>>

@@ -1,0 +1,44 @@
+Foreach is a handy function provided by the svefile library. Foreach uses the maybe most powerful feature of the sve language: anonymous functions.
+
+Using foreach is easy. Give it an array and an anonymous function and – tah dah – it works.
+<<code perl>>
+foreach(array)::def (element) { code }
+<</code>>
+
+Example: send a message to all players:
+<<code perl>>
+foreach(@a)::def(player) { player->tell("Hi!") }
+<</code>>
+
+== How does it work? ==
+
+It can be hard to understand how foreach works. Here is it's source code:
+<<code ruby>>
+def: foreach (t, u)
+	if: !u return def (u)
+		foreach(t, u)
+	
+	else: {
+		local l = len(t)
+		for:	local i=0,
+			i < l,
+			i++
+		
+			u(t[i]) }
+<</code>>
+
+The type of the foreach function the type notation is ##table(T) -> ((T -> ()) -> ())##. In other words, it takes and array and returns a function, which takes an anonymous function which takes an element of the array. The returned function calls foreach again with two arguments, the second is the callback function.
+
+Foreach can be called with two arguments and that's a perfectly valid way. But the implementation provides us a more powerfui version, a one that generates functions which perform the operation. This can be used to easily create derivate functions, below are few examples:
+
+<<code perl>>
+# iterate thru range
+def: iteraterange(start, stop) = foreach(range(start, stop))
+
+# for all players
+def: forall(f) foreach(@a)::f
+
+forall::def (p) {
+    p->tell("hey!")
+}
+<</code>>
