@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Sve documentation by fergusq</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/fergusq/sve-documentation">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Sve documentation</h1>
+            <h2>Various articles and documents about the Sve programming language</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/fergusq/sve-documentation/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/fergusq/sve-documentation/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a name="sve-language" class="anchor" href="#sve-language"><span class="octicon octicon-link"></span></a>Sve language</h1>
+
+<h2>
+<a name="variables-and-data-types" class="anchor" href="#variables-and-data-types"><span class="octicon octicon-link"></span></a>Variables and data types</h2>
+
+<p>There are five important datatypes in Sve: number, string, bool, table and function. Rare datatypes nfunction and userdata are not discussed in this document.</p>
+
+<p>Number is floating pointer datatype and equivalent to Java's double. Strings are in UTF-8 format. Boolean constants are <code>true</code> and <code>false</code>. <code>nil</code> is false.</p>
+
+<p>Tables are complex data structures and have many features. They are basically hash maps. Keys are always strings, if a number is given it is converted to a string. Word <strong>array</strong> is used as a synonym to table.</p>
+
+<h3>
+<a name="constants" class="anchor" href="#constants"><span class="octicon octicon-link"></span></a>Constants</h3>
+
+<h4>
+<a name="number-constants" class="anchor" href="#number-constants"><span class="octicon octicon-link"></span></a>Number constants</h4>
+
+<p>Number constants are in decimal format. They can contain decimals (0.435) or be in sciencific format (like 0.435e34). <code>Infinity</code> and <code>NaN</code> are number constants.</p>
+
+<h4>
+<a name="string-constants" class="anchor" href="#string-constants"><span class="octicon octicon-link"></span></a>String constants</h4>
+
+<p>Strings are in UTF-8 format. They can contain escaped characters Escape character is <code>\</code>.</p>
+
+<p>One word string can also be in the key format: <code>:key</code>.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="s2">"A normal string"</span>
+
+<span class="ss">:key_format</span>
+
+<span class="s2">"A"</span> <span class="o">==</span> <span class="ss">:A</span>
+</pre></div>
+
+<h4>
+<a name="table-values" class="anchor" href="#table-values"><span class="octicon octicon-link"></span></a>Table values</h4>
+
+<p>Table values can be either in <strong>table format</strong> or <strong>list format</strong>.</p>
+
+<div class="highlight highlight-perl"><pre><span class="c1"># table format</span>
+<span class="n">tbl</span> <span class="o">=</span> <span class="p">{</span> <span class="n">key</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span> <span class="n">key1</span> <span class="o">=</span> <span class="n">value2</span> <span class="p">}</span>
+
+<span class="c1"># list format</span>
+<span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">]</span>
+</pre></div>
+
+<p>In list format keys are given to variables. Value 1 gets key <code>0</code>. Value 2 gets key <code>1</code>.</p>
+
+<h4>
+<a name="boolean-constants-and-the-nil-constant" class="anchor" href="#boolean-constants-and-the-nil-constant"><span class="octicon octicon-link"></span></a>Boolean constants and the nil constant</h4>
+
+<p>Boolean constants are <code>true</code> and <code>false</code>. The nil constant, <code>nil</code>, is a equivalent to null in Java or Javascript.</p>
+
+<h3>
+<a name="declaring-variables" class="anchor" href="#declaring-variables"><span class="octicon octicon-link"></span></a>Declaring variables</h3>
+
+<p>In Sve, undefined variables are an error. To define a variable a value must be assigned to it.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">var</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="s2">"Hello world!"</span>
+<span class="n">car</span> <span class="o">=</span> <span class="p">{</span> <span class="n">topspeed</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:red</span> <span class="p">}</span>
+</pre></div>
+
+<p>Inside functions <code>local</code> keyword should be used when declaring new variables. If there is a variable of the same name on the top level, a value is assigned to it instead of declaring a new variable.</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">def:</span> <span class="n">myfunction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nb">local</span> <span class="n">msg</span> <span class="o">=</span> <span class="s">"Hello world!"</span>
+    <span class="c1"># ...</span>
+<span class="p">}</span>
+
+<span class="c1"># without local keyword</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">nil</span>
+<span class="n">def:</span> <span class="n">setmsg</span><span class="p">(</span><span class="n">newmsg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">newmsg</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="number-increment-and-decrement-statements" class="anchor" href="#number-increment-and-decrement-statements"><span class="octicon octicon-link"></span></a>Number increment and decrement statements</h3>
+
+<p>Shortcut syntaxes <code>variable++</code> and <code>variable--</code> increment and decrement number variables by one. Expression <code>variable++</code> returns the original value and <code>+ +variable</code> the incremented value.</p>
+
+<h3>
+<a name="table-accessing-and-modifying-expressions" class="anchor" href="#table-accessing-and-modifying-expressions"><span class="octicon octicon-link"></span></a>Table accessing and modifying expressions</h3>
+
+<p><code>table[key]</code> is the primary way to get a value from a table. Shortcut syntax <code>table.key</code> can be used and is equivalent to <code>table["key"]</code> (similar to one in Lua).</p>
+
+<p>Modifying a table is similar to modifying a variable.</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">tbl</span> <span class="o">=</span> <span class="p">{</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span> <span class="p">}</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">tbl</span><span class="p">[</span><span class="s">"b"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+
+<h2>
+<a name="statements-and-control-structures" class="anchor" href="#statements-and-control-structures"><span class="octicon octicon-link"></span></a>Statements and control structures</h2>
+
+<h3>
+<a name="semicolons" class="anchor" href="#semicolons"><span class="octicon octicon-link"></span></a>Semicolons</h3>
+
+<p>Semicolons are not required, but can be used in order to prevent ambiguities. Programmer can decided whether to use semicolons or not.</p>
+
+<p>Following ambiguities are solved using semicolons:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># a = b(c+d)-&gt;e</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">b</span>
+<span class="p">;(</span><span class="n">c</span><span class="o">+</span><span class="n">d</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">e</span>
+
+<span class="c1"># a = $$.b = c</span>
+<span class="n">a</span> <span class="o">=</span> <span class="vg">$;</span>
+<span class="vg">$.</span><span class="n">b</span> <span class="o">=</span> <span class="n">c</span>
+</pre></div>
+
+<h3>
+<a name="blocks" class="anchor" href="#blocks"><span class="octicon octicon-link"></span></a>Blocks</h3>
+
+<p>A block starts with <code>{</code> and ends with <code>}</code>. A block is considered to be a single statement.</p>
+
+<h3>
+<a name="if" class="anchor" href="#if"><span class="octicon octicon-link"></span></a>If</h3>
+
+<div class="highlight highlight-perl"><pre><span class="k">if</span><span class="p">:</span> <span class="n">condition</span> <span class="p">{</span>
+    <span class="c1"># action 1</span>
+<span class="p">}</span> <span class="k">else</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1"># action 2</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>If condition evaluates to <code>true</code>, the first action is executed. Otherwise the second action is executed. Else-block is optional.</p>
+
+<h3>
+<a name="while-and-for" class="anchor" href="#while-and-for"><span class="octicon octicon-link"></span></a>While and For</h3>
+
+<p>Code inside a while loop is executed as long as the condition is true.</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">while</span><span class="p">:</span> <span class="n">condition</span> <span class="p">{</span>
+    <span class="c1"># code</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Code inside a for loop is executed as long as the condition is true. Initialization is executed before the loop and incrementing is executed every time after the code is executed.</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">for</span><span class="p">:</span> <span class="n">initialization</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">incrementation</span> <span class="p">{</span>
+    <span class="c1"># code</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Example:</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">for</span><span class="p">:</span> <span class="nb">local</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">,</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="functions" class="anchor" href="#functions"><span class="octicon octicon-link"></span></a>Functions</h2>
+
+<p>Functions are first class values in Sve. All functions are anonymous and can be assigned to a variables.</p>
+
+<p>A "named" function is declared using a shortcut syntax.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="ss">def</span><span class="p">:</span> <span class="n">function_name</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># code</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Which is equivalent to:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">function_name</span> <span class="o">=</span> <span class="n">def</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># code</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>A value is returned using return keyword.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="ss">def</span><span class="p">:</span> <span class="n">squaresum</span><span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">value1</span><span class="o">*</span><span class="n">value1</span> <span class="o">+</span> <span class="n">value2</span><span class="o">*</span><span class="n">value2</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>A shortcut syntax can be used for one line math functions.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="ss">def</span><span class="p">:</span> <span class="n">squaresum</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">=</span> <span class="n">v1</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span><span class="o">*</span><span class="n">v2</span>
+</pre></div>
+
+<h3>
+<a name="function-calling" class="anchor" href="#function-calling"><span class="octicon octicon-link"></span></a>Function calling</h3>
+
+<p>There are three function calling syntaxes. First, parentheses. <code>function(args)</code>. Second, <code>::</code>-operator: <code>function::arg</code>, which is handy for printing text. Third, arrow operator: <code>arg1-&gt;function(rest_of_arguments)</code>. Arrow resembles method calling and is sometimes used with conversion functions. <code>20-&gt;ticks</code> returns value of 20 seconds in ticks.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">print</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+<span class="nb">print</span><span class="o">::</span><span class="s2">"hello"</span>
+<span class="s2">"hello"</span><span class="o">-&gt;</span><span class="nb">print</span>
+
+<span class="n">tell</span><span class="p">(</span><span class="vi">@m</span><span class="p">,</span> <span class="s2">"hello"</span><span class="p">)</span>
+<span class="vi">@m</span><span class="o">-&gt;</span><span class="n">tell</span><span class="p">(</span><span class="s2">"hello"</span><span class="p">)</span>
+
+<span class="n">a</span><span class="o">=[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span>
+<span class="n">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">a</span><span class="o">-&gt;</span><span class="n">len</span>
+</pre></div>
+
+<h2>
+<a name="important-sve-functions" class="anchor" href="#important-sve-functions"><span class="octicon octicon-link"></span></a>Important Sve functions</h2>
+
+<p>Function|Type|Description
+keys(tbl)|  table -&gt; table| Returns an array which contains all keys of table <code>tbl</code>.
+len(arr)|   table -&gt; number|        Returns the number of elements with a numerical key in array <code>arr</code>. To get the size of a table, use <code>len(tbl-&gt;keys)</code>.
+rnd(n)| number -&gt; number|   Creates a random number in range <code>0..n-1</code>
+type(obj)|  any -&gt; string|  Returns the name of the type of <code>obj</code>. (either <code>bool</code>, <code>function</code>, <code>nil</code>, <code>number</code> or <code>table</code>)</p>
+
+<h3>
+<a name="sve-function-documentation" class="anchor" href="#sve-function-documentation"><span class="octicon octicon-link"></span></a>Sve function documentation</h3>
+
+<p>There are many sve functions, you can list all sve function help texts using function allhelp (from chat <code>/sve allhelp()</code>). A single help text can be viewed using help function (from chat <code>/sve help("function_name")</code>).</p>
+
+<h2>
+<a name="synthetic-variables" class="anchor" href="#synthetic-variables"><span class="octicon octicon-link"></span></a>Synthetic variables</h2>
+
+<h3>
+<a name="scope-variables" class="anchor" href="#scope-variables"><span class="octicon octicon-link"></span></a>Scope variables</h3>
+
+<p>In sve, scopes are tables that are used to store variables. There are two important scope variables: the global scope ($) and the local scope ($$). The global scope contains all variables that are declared at the top level. Not inside any block. The local scope contains all variables in the local (current) scope and all parent scopes including the global scope.</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">hello</span> <span class="o">=</span> <span class="s">"hello world"</span>
+<span class="k">print</span><span class="p">(</span><span class="vg">$[</span><span class="s">"hello"</span><span class="p">])</span>  <span class="c1"># -&gt; "hello world" hello is declared at the top level</span>
+<span class="k">print</span><span class="p">(</span><span class="vg">$$</span><span class="p">[</span><span class="s">"hello"</span><span class="p">])</span> <span class="c1"># -&gt; "hello world" the local scope is the global scope in top level</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">{</span>
+    <span class="nb">local</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># local keyword is used to create a new variable, it is not required at the top level</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="vg">$[</span><span class="s">"i"</span><span class="p">])</span>  <span class="c1"># -&gt; 1</span>
+    <span class="k">print</span><span class="p">(</span><span class="vg">$$</span><span class="p">[</span><span class="s">"i"</span><span class="p">])</span> <span class="c1"># -&gt; 3</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="modifying-scopes" class="anchor" href="#modifying-scopes"><span class="octicon octicon-link"></span></a>Modifying scopes</h3>
+
+<p>Scopes can be modified using these functions. Remember, scopes are tables and these function work with both tables and scopes.</p>
+
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>define(scope, index, value)</td>
+<td>table, string, any -&gt;</td>
+<td>Creates a new variable or modifies an existing in a specific scope. Super scopes are ignored. Can be compared to the local keyword.</td>
+</tr>
+<tr>
+<td>undefine(table, index)</td>
+<td>table, string -&gt;</td>
+<td>Removes an entry from a table. Works with scopes too.</td>
+</tr>
+<tr>
+<td>defined(table, index)</td>
+<td>table, string -&gt; bool</td>
+<td>Returns true if table contains an index. Works with scopes too.</td>
+</tr>
+<tr>
+<td>setsup(scope, scope)</td>
+<td>table, table -&gt; table</td>
+<td>Sets the super scope of a scope.</td>
+</tr>
+<tr>
+<td>getsup(scope)</td>
+<td>table -&gt; table</td>
+<td>Returns the super scope of a scope.</td>
+</tr>
+<tr>
+<td>setpt(scope, scope)</td>
+<td>table, table -&gt; table</td>
+<td>Sets the prototype scope of a scope.</td>
+</tr>
+<tr>
+<td>getpt(scope)</td>
+<td>table -&gt;  table</td>
+<td>Returns the prototype scope of a scope.</td>
+</tr>
+<tr>
+<td>setptf(scope, function)</td>
+<td>table, function -&gt;</td>
+<td>Sets the prototype/index function of a scope.</td>
+</tr>
+<tr>
+<td>getptf(scope)</td>
+<td>table -&gt; function</td>
+<td>Returns the prototype/index function of a scope.</td>
+</tr>
+<tr>
+<td>setls(function, scope)</td>
+<td>function, table -&gt;</td>
+<td>Sets function declaration scope.</td>
+</tr>
+<tr>
+<td>getls(function)</td>
+<td>function -&gt; table</td>
+<td>Gets the declaration scope of a function.</td>
+</tr>
+</tbody>
+</table><p>Every table (and scope) has a super table. If an index is not found from the table, it is assumed to be in the super table. A prototype table is like the super table, except that it is read-only.</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">tbl</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">sup</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">}</span>
+<span class="n">setsup</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">sup</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sup</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">defined</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="s">"a"</span><span class="p">))</span> <span class="c1"># -&gt; false</span>
+
+<span class="n">tbl</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sup</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 2</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">defined</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="s">"a"</span><span class="p">))</span> <span class="c1"># -&gt; false</span>
+
+<span class="c1"># ,</span>
+
+<span class="n">tbl</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">pt</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">}</span>
+<span class="n">setpt</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">defined</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="s">"a"</span><span class="p">))</span> <span class="c1"># -&gt; false</span>
+
+<span class="n">tbl</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tbl</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="c1"># -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">defined</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="s">"a"</span><span class="p">))</span> <span class="c1"># -&gt; true</span>
+</pre></div>
+
+<p>Prototype function is called if an index is not found from super or prototype table. A prototype function takes the index as an argument ant returns it's value. A table which has a prototype function can't trigger an index not found exception.</p>
+
+<h2>
+<a name="synthetic-parameters" class="anchor" href="#synthetic-parameters"><span class="octicon octicon-link"></span></a>Synthetic parameters</h2>
+
+<p>Generated parameters begin with character $. They can be accessed using scope variables.</p>
+
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Using scope variable</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>$args</td>
+<td><code>$$["$args"]</code></td>
+<td>table</td>
+<td>An array of arguments</td>
+</tr>
+<tr>
+<td>$parent</td>
+<td><code>$$["$parent"]</code></td>
+<td>scope</td>
+<td>The scope which function is called from</td>
+</tr>
+<tr>
+<td>$obj</td>
+<td><code>$$["$obj"]</code></td>
+<td>any</td>
+<td>The object which contains the function, available only when function is called in style <code>obj.function()</code> in which case it contains <code>obj</code>
+</td>
+</tr>
+</tbody>
+</table><p>$parent can be used to modify caller's environment. For example, this removes $-characters from synthetic parameters:</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">def:</span> <span class="n">removedollar</span> <span class="p">{</span>
+    <span class="nb">local</span> <span class="n">parent</span> <span class="o">=</span> <span class="vg">$$</span><span class="p">[</span><span class="s">"$parent"</span><span class="p">]</span>
+    <span class="n">define</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s">"parent"</span><span class="p">,</span> <span class="n">parent</span><span class="p">[</span><span class="s">"$parent"</span><span class="p">])</span> <span class="c1"># define-function is used in place of the local-keyword when modifying scopes</span>
+    <span class="n">define</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s">"args"</span><span class="p">,</span> <span class="n">parent</span><span class="p">[</span><span class="s">"$args"</span><span class="p">])</span>
+    <span class="k">if</span><span class="p">:</span> <span class="nb">defined</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s">"$obj"</span><span class="p">)</span> <span class="c1"># $obj does not exist if function is called in a wrong way</span>
+        <span class="n">define</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s">"obj"</span><span class="p">,</span> <span class="n">parent</span><span class="p">[</span><span class="s">"$obj"</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="n">def:</span> <span class="n">printsynthetics</span> <span class="p">{</span>
+    <span class="n">removedollar</span><span class="p">()</span>
+    <span class="k">print</span><span class="o">::</span><span class="nb">keys</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span> <span class="c1"># scope variable should not be printed</span>
+    <span class="k">print</span><span class="o">::</span><span class="n">args</span>
+    <span class="k">if</span><span class="p">:</span> <span class="nb">defined</span><span class="p">(</span><span class="vg">$$</span><span class="p">,</span> <span class="s">"obj"</span><span class="p">)</span> <span class="k">print</span><span class="o">::</span><span class="n">obj</span>
+<span class="p">}</span>
+
+<span class="p">{</span>
+    <span class="nb">local</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">printsynthetics</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+
+<h1>
+<a name="sve-for-bukkit" class="anchor" href="#sve-for-bukkit"><span class="octicon octicon-link"></span></a>Sve for Bukkit</h1>
+
+<h2>
+<a name="built-in-functions" class="anchor" href="#built-in-functions"><span class="octicon octicon-link"></span></a>Built-in functions</h2>
+
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>broadcast(msg)</td>
+<td>string -&gt; nil</td>
+<td>Broadcasts a message</td>
+</tr>
+<tr>
+<td>print(msg)</td>
+<td>string -&gt; nil</td>
+<td>Sends a message to all players</td>
+</tr>
+<tr>
+<td>tell(player, msg)</td>
+<td>player or string, string -&gt; nil</td>
+<td>Sends a message to a player</td>
+</tr>
+<tr>
+<td>give(player, itemid)</td>
+<td>player or string, number -&gt; nil</td>
+<td>Gives an item to the player</td>
+</tr>
+<tr>
+<td>exec(player, cmd)</td>
+<td>player or string, string -&gt; number</td>
+<td>Executes the command as a player</td>
+</tr>
+<tr>
+<td>system(cmd)</td>
+<td>string -&gt; nil</td>
+<td>Executes the command</td>
+</tr>
+<tr>
+<td>hasperm(player, perm)</td>
+<td>player or string, string -&gt; boolean</td>
+<td>Does a player have a permission?</td>
+</tr>
+<tr>
+<td>players()</td>
+<td>( ) -&gt; table(player)</td>
+<td>Current players on the server</td>
+</tr>
+<tr>
+<td>worlds()</td>
+<td>( ) -&gt; table(world)</td>
+<td>Current worlds</td>
+</tr>
+<tr>
+<td>location(x, y, z, world)</td>
+<td>number, number, number, world -&gt; location</td>
+<td>Creates a new org.bukkit.Location object</td>
+</tr>
+<tr>
+<td>vector(x, y, z)</td>
+<td>number, number, number -&gt; vector</td>
+<td>Creates a new org.bukkit.util.Vector object</td>
+</tr>
+<tr>
+<td>registereventhandler(event, handler)</td>
+<td>string, function -&gt; nil</td>
+<td>Registers an event handler</td>
+</tr>
+<tr>
+<td>getServer()</td>
+<td>-&gt;server</td>
+<td>Returns the server (org.bukkit.Bukkit)</td>
+</tr>
+</tbody>
+</table><h2>
+<a name="minecraft-integration" class="anchor" href="#minecraft-integration"><span class="octicon octicon-link"></span></a>Minecraft integration</h2>
+
+<p>Variables <a href="https://github.com/m" class="user-mention">@m</a>, <a href="https://github.com/a" class="user-mention">@a</a> and @w and related functions players() and worlds() are used to get the current player (<a href="https://github.com/m" class="user-mention">@m</a>), all players on the server (<a href="https://github.com/a" class="user-mention">@a</a>) and all worlds (@w). <a href="https://github.com/m" class="user-mention">@m</a> is a players object, and <a href="https://github.com/a" class="user-mention">@a</a> and @w are arrays.</p>
+
+<p>Methods of Java objects can be accessed. For example, <a href="https://github.com/m" class="user-mention">@m</a> is a CraftPlayer object and contains all methods from org.bukkit.entity.Player. A list of these methods is found from bukkit api documentation ([[<a href="http://jd.bukkit.org/rb/apidocs/%7Chere%5D%5D">http://jd.bukkit.org/rb/apidocs/|here]]</a>).</p>
+
+<p>As Sve is a typeless language and does not support method overloading, method names contain also types of the parameters. Method sendMessage(String) is called in sve code sendMessage_String. To send a message to a player: <code>@m.sendMessage_String("msg")</code>. If method is not overloaded, it can be used also without type information.</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">if</span><span class="p">:</span> <span class="n">len</span><span class="p">(</span><span class="nv">@a</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="nb">local</span> <span class="n">player</span> <span class="o">=</span> <span class="nv">@a</span><span class="p">[</span><span class="n">rnd</span><span class="p">(</span><span class="nv">@a</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">)]</span> <span class="c1"># random player</span>
+    <span class="k">if</span><span class="p">:</span> <span class="o">!</span><span class="n">player</span><span class="o">.</span><span class="n">isOnGround</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">sendMessage_String</span><span class="p">(</span><span class="s">"Hey, do you fly?!"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="java-interface-functions" class="anchor" href="#java-interface-functions"><span class="octicon octicon-link"></span></a>Java Interface functions</h3>
+
+<p><strong>getClass(name)</strong> returns a java.lang.class object. <code>getClass("java.lang.Object")</code> returns the same object as <code>java.lang.Object.class</code> in java.</p>
+
+<p><strong>static(name)</strong> returns a table that contains all static fields (including enum constants) of a class. <code>static("java.lang.Math")</code> returns a table that contains constants <code>E</code> and <code>PI</code>.</p>
+
+<p>It is recommended to "import" enums at the begin of a svefile:</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">material</span> <span class="o">=</span> <span class="n">static</span><span class="p">(</span><span class="s">"org.bukkit.Material"</span><span class="p">)</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">block_material</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">STONE</span>
+</pre></div>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/fergusq">fergusq</a> can be found on <a href="https://github.com/fergusq/sve-documentation">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
