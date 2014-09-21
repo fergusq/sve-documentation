@@ -133,7 +133,7 @@
 <h3>
 <a name="table-accessing-and-modifying-expressions" class="anchor" href="#table-accessing-and-modifying-expressions"><span class="octicon octicon-link"></span></a>Table accessing and modifying expressions</h3>
 
-<p><code>table[key]</code> is the primary way to get a value from a table. Shortcut syntax <code>table.key</code> can be used and is equivalent to <code>table["key"]</code> (similar to one in Lua).</p>
+<p>``<code>table[key]</code> is the primary way to get a value from a table. Shortcut syntax <code>table.key</code> can be used and is equivalent to <code>table["key"]</code> (similar to one in Lua).</p>
 
 <p>Modifying a table is similar to modifying a variable.</p>
 
@@ -253,13 +253,36 @@
 <h2>
 <a name="important-sve-functions" class="anchor" href="#important-sve-functions"><span class="octicon octicon-link"></span></a>Important Sve functions</h2>
 
-<p>Function|Type|Description
-keys(tbl)|  table -&gt; table| Returns an array which contains all keys of table <code>tbl</code>.
-len(arr)|   table -&gt; number|        Returns the number of elements with a numerical key in array <code>arr</code>. To get the size of a table, use <code>len(tbl-&gt;keys)</code>.
-rnd(n)| number -&gt; number|   Creates a random number in range <code>0..n-1</code>
-type(obj)|  any -&gt; string|  Returns the name of the type of <code>obj</code>. (either <code>bool</code>, <code>function</code>, <code>nil</code>, <code>number</code> or <code>table</code>)</p>
-
-<h3>
+<table>
+<thead><tr>
+<th>Function</th>
+<th>Type</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>keys(tbl)</td>
+<td>table -&gt; table</td>
+<td>Returns an array which contains all keys of table <code>tbl</code>.</td>
+</tr>
+<tr>
+<td>len(arr)</td>
+<td>table -&gt; number</td>
+<td>Returns the number of elements with a numerical key in array <code>arr</code>. To get the size of a table, use <code>len(tbl-&gt;keys)</code>.</td>
+</tr>
+<tr>
+<td>rnd(n)</td>
+<td>number -&gt; number</td>
+<td>Creates a random number in range <code>0..n-1</code>
+</td>
+</tr>
+<tr>
+<td>type(obj)</td>
+<td>any -&gt; string</td>
+<td>Returns the name of the type of <code>obj</code>. (either <code>bool</code>, <code>function</code>, <code>nil</code>, <code>number</code> or <code>table</code>)</td>
+</tr>
+</tbody>
+</table><h3>
 <a name="sve-function-documentation" class="anchor" href="#sve-function-documentation"><span class="octicon octicon-link"></span></a>Sve function documentation</h3>
 
 <p>There are many sve functions, you can list all sve function help texts using function allhelp (from chat <code>/sve allhelp()</code>). A single help text can be viewed using help function (from chat <code>/sve help("function_name")</code>).</p>
@@ -442,11 +465,147 @@ type(obj)|  any -&gt; string|  Returns the name of the type of <code>obj</code>.
 <span class="p">}</span>
 </pre></div>
 
+<h2>
+<a name="naming-conventions" class="anchor" href="#naming-conventions"><span class="octicon octicon-link"></span></a>Naming conventions</h2>
+
+<h3>
+<a name="case-rules" class="anchor" href="#case-rules"><span class="octicon octicon-link"></span></a>Case rules</h3>
+
+<ul>
+<li>The general rule: all names are in the <strong>lowercase</strong>. For example <code>print</code>, <code>string</code>, <code>endvote</code>.</li>
+<li>All constants are in the <code>UPPER_CASE</code>.</li>
+<li>All Java names are as in Java. For example <code>getClass</code>, <code>getServer</code>.</li>
+</ul><h3>
+<a name="other-rules" class="anchor" href="#other-rules"><span class="octicon octicon-link"></span></a>Other rules</h3>
+
+<ul>
+<li>All public constants must have the name their svefile as a prefix. For example <code>VOTE_PREFIX</code>, <code>FLY_MAXTURN</code>.</li>
+<li>All generated variables have an @ sign as a prefix. For example <code>@a</code>, <code>@m</code>.</li>
+<li>All generated parameters have a $ sign as a prefix. For example <code>$$["$args"]</code>, <code>$$["$parent"]</code>.</li>
+</ul><h3>
+<a name="program-name" class="anchor" href="#program-name"><span class="octicon octicon-link"></span></a>Program name</h3>
+
+<ul>
+<li>The name of a sveprogram should be short and descriptive, one word long. It should be prefixed with "sve". For example, a program that protects things should be named "sveprotection".</li>
+<li>All permissions should begin with the name of the program. Eg. "sveprotection.protect".</li>
+<li>The name of a svefile should end with ".sve". Eg. "protection.sve".</li>
+<li>If the program contains only one file, the actual file name should contain author's name to avoid name collisions. Eg. "fergusq-protection.sve"</li>
+<li>If the program contains many svefiles, they should be all stored to a folder which is named after the program. Eg. "fergusq-sveprotection"</li>
+<li>The event group of the program should be named after the file name. Eg. "protection.sve".</li>
+<li>All public constants should begin with the name of the file. Eg. "<code>PROTECTION_RANGE</code>".</li>
+</ul><h2>
+<a name="namespaces-and-subfunctions" class="anchor" href="#namespaces-and-subfunctions"><span class="octicon octicon-link"></span></a>Namespaces and subfunctions</h2>
+
+<p>Because names in sve are supposed to be short, there is a great probability that two names are the same. The best ways to avoid name collisions is using namespaces and subfunctions.</p>
+
+<h3>
+<a name="namespaces" class="anchor" href="#namespaces"><span class="octicon octicon-link"></span></a>Namespaces</h3>
+
+<p>A namespace is a table which contains functions and variables.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># create a new namespace 'protection'</span>
+<span class="n">protection</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1"># adding variables to a namespace</span>
+<span class="n">protection</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">protection</span><span class="o">.</span><span class="n">areas</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="c1"># functions</span>
+<span class="p">{</span>
+    <span class="ss">def</span><span class="p">:</span> <span class="n">protection</span><span class="o">.</span><span class="n">protectarea</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">:</span> <span class="n">type</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="o">==</span> <span class="ss">:string</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">areas</span><span class="o">[</span><span class="n">area</span><span class="o">]</span>
+    <span class="p">}</span>
+
+    <span class="n">setsup</span><span class="p">(</span><span class="n">protection</span><span class="p">,</span> <span class="err">$</span><span class="p">)</span>
+    <span class="n">setsup</span><span class="p">(</span><span class="vg">$$</span><span class="p">,</span> <span class="n">protection</span><span class="p">)</span> <span class="c1"># makes variables and functions of protection usable without 'protection.' prefix</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="subfunctions" class="anchor" href="#subfunctions"><span class="octicon octicon-link"></span></a>Subfunctions</h3>
+
+<p>Subfunctions are functions which can be only accessed inside one function.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="ss">def</span><span class="p">:</span> <span class="n">f1</span> <span class="p">{</span>
+    <span class="ss">def</span><span class="p">:</span> <span class="n">f2</span> <span class="p">{</span>
+        <span class="c1"># ...</span>
+    <span class="p">}</span>
+    <span class="c1"># ...</span>
+    <span class="n">f2</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+
 <h1>
-<a name="sve-for-bukkit" class="anchor" href="#sve-for-bukkit"><span class="octicon octicon-link"></span></a>Sve for Bukkit</h1>
+<a name="sve-libraries" class="anchor" href="#sve-libraries"><span class="octicon octicon-link"></span></a>Sve libraries</h1>
 
 <h2>
-<a name="built-in-functions" class="anchor" href="#built-in-functions"><span class="octicon octicon-link"></span></a>Built-in functions</h2>
+<a name="sve-standard-library" class="anchor" href="#sve-standard-library"><span class="octicon octicon-link"></span></a>Sve Standard Library</h2>
+
+<h3>
+<a name="foreach-function" class="anchor" href="#foreach-function"><span class="octicon octicon-link"></span></a>Foreach function</h3>
+
+<p>Foreach is a handy function provided by the svefile library. Foreach uses the maybe most powerful feature of the sve language: anonymous functions.
+Using foreach is easy. Give it an array and an anonymous function and – tah dah – it works.</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">foreach</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">::</span><span class="n">def</span> <span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="p">{</span> <span class="n">code</span> <span class="p">}</span>
+</pre></div>
+
+<p>Example: send a message to all players:</p>
+
+<div class="highlight highlight-perl"><pre><span class="k">foreach</span><span class="p">(</span><span class="nv">@a</span><span class="p">)</span><span class="o">::</span><span class="n">def</span><span class="p">(</span><span class="n">player</span><span class="p">)</span> <span class="p">{</span> <span class="n">player</span><span class="o">-&gt;</span><span class="nb">tell</span><span class="p">(</span><span class="s">"Hi!"</span><span class="p">)</span> <span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="how-does-it-work" class="anchor" href="#how-does-it-work"><span class="octicon octicon-link"></span></a>How does it work?</h4>
+
+<p>It can be hard to understand how foreach works. Here is it's source code:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="ss">def</span><span class="p">:</span> <span class="n">foreach</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">:</span> <span class="o">!</span><span class="n">u</span> <span class="k">return</span> <span class="k">def</span> <span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">foreach</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">local</span> <span class="n">l</span> <span class="o">=</span> <span class="n">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">for</span><span class="p">:</span> <span class="n">local</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+             <span class="n">i</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">,</span>
+             <span class="n">i</span><span class="o">++</span>
+            <span class="n">u</span><span class="p">(</span><span class="n">t</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">)</span> <span class="p">}</span>
+</pre></div>
+
+<p>The type of the foreach function the type notation is ##table(T) -&gt; ((T -&gt; ()) -&gt; ())##. In other words, it takes and array and returns a function, which takes an anonymous function which takes an element of the array. The returned function calls foreach again with two arguments, the second is the callback function.</p>
+
+<p>Foreach can be called with two arguments and that's a perfectly valid way. But the implementation provides us a more powerfui version, a one that generates functions which perform the operation. This can be used to easily create derivate functions, below are few examples:</p>
+
+<div class="highlight highlight-perl"><pre><span class="c1"># iterate thru range</span>
+<span class="n">def:</span> <span class="n">iteraterange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="o">=</span> <span class="k">foreach</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">))</span>
+
+<span class="c1"># for all players</span>
+<span class="n">def:</span> <span class="n">forall</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">foreach</span><span class="p">(</span><span class="nv">@a</span><span class="p">)</span><span class="o">::</span><span class="n">f</span>
+
+<span class="nn">forall::</span><span class="n">def</span> <span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="nb">tell</span><span class="p">(</span><span class="s">"hey!"</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="java-interface-library" class="anchor" href="#java-interface-library"><span class="octicon octicon-link"></span></a>Java Interface Library</h2>
+
+<p><strong>getClass(name)</strong> returns a java.lang.class object. <code>getClass("java.lang.Object")</code> returns the same object as <code>java.lang.Object.class</code> in java.</p>
+
+<p><strong>static(name)</strong> returns a table that contains all static fields (including enum constants) of a class. <code>static("java.lang.Math")</code> returns a table that contains constants <code>E</code> and <code>PI</code>.</p>
+
+<p>It is recommended to "import" enums at the begin of a svefile:</p>
+
+<div class="highlight highlight-perl"><pre><span class="n">material</span> <span class="o">=</span> <span class="n">static</span><span class="p">(</span><span class="s">"org.bukkit.Material"</span><span class="p">)</span>
+
+<span class="c1"># ...</span>
+
+<span class="n">block_material</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">STONE</span>
+</pre></div>
+
+<h2>
+<a name="sve-for-bukkit" class="anchor" href="#sve-for-bukkit"><span class="octicon octicon-link"></span></a>Sve for Bukkit</h2>
+
+<h3>
+<a name="built-in-functions" class="anchor" href="#built-in-functions"><span class="octicon octicon-link"></span></a>Built-in functions</h3>
 
 <table>
 <thead><tr>
@@ -521,8 +680,8 @@ type(obj)|  any -&gt; string|  Returns the name of the type of <code>obj</code>.
 <td>Returns the server (org.bukkit.Bukkit)</td>
 </tr>
 </tbody>
-</table><h2>
-<a name="minecraft-integration" class="anchor" href="#minecraft-integration"><span class="octicon octicon-link"></span></a>Minecraft integration</h2>
+</table><h3>
+<a name="minecraft-integration" class="anchor" href="#minecraft-integration"><span class="octicon octicon-link"></span></a>Minecraft integration</h3>
 
 <p>Variables <a href="https://github.com/m" class="user-mention">@m</a>, <a href="https://github.com/a" class="user-mention">@a</a> and @w and related functions players() and worlds() are used to get the current player (<a href="https://github.com/m" class="user-mention">@m</a>), all players on the server (<a href="https://github.com/a" class="user-mention">@a</a>) and all worlds (@w). <a href="https://github.com/m" class="user-mention">@m</a> is a players object, and <a href="https://github.com/a" class="user-mention">@a</a> and @w are arrays.</p>
 
@@ -536,22 +695,6 @@ type(obj)|  any -&gt; string|  Returns the name of the type of <code>obj</code>.
         <span class="n">player</span><span class="o">.</span><span class="n">sendMessage_String</span><span class="p">(</span><span class="s">"Hey, do you fly?!"</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-
-<h3>
-<a name="java-interface-functions" class="anchor" href="#java-interface-functions"><span class="octicon octicon-link"></span></a>Java Interface functions</h3>
-
-<p><strong>getClass(name)</strong> returns a java.lang.class object. <code>getClass("java.lang.Object")</code> returns the same object as <code>java.lang.Object.class</code> in java.</p>
-
-<p><strong>static(name)</strong> returns a table that contains all static fields (including enum constants) of a class. <code>static("java.lang.Math")</code> returns a table that contains constants <code>E</code> and <code>PI</code>.</p>
-
-<p>It is recommended to "import" enums at the begin of a svefile:</p>
-
-<div class="highlight highlight-perl"><pre><span class="n">material</span> <span class="o">=</span> <span class="n">static</span><span class="p">(</span><span class="s">"org.bukkit.Material"</span><span class="p">)</span>
-
-<span class="c1"># ...</span>
-
-<span class="n">block_material</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">STONE</span>
 </pre></div>
       </section>
 
