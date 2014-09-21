@@ -1,0 +1,433 @@
+All examples are public domain.
+
+Please don't mind syntax coloring. BukkitDev doesn't support Sve, so it uses Perl coloring.
+
+== How to install an example ==
+
+Before installing svefiles:
+
+# Create a new folder for example projects, called for example "sve-examples".
+# Add folder to the sve configuration file to the autorun section.
+# Restart server
+
+Configuration file should look like this:
+<<code yaml>>
+sve:
+  path:
+    - svefiles/
+    - plugins/Sve/
+  autorun:
+    - svefiles/all.sve
+    - sve-examples/
+<</code>>
+
+Installing one svefile:
+# Create a new file to the folder created for examples
+# Copy example code to the fil
+# Run command ##/svefile sve-examples/file.sve##
+
+== Flight Simulator ==
+
+fly.sve by fergusq
+
+<<code ruby>>
+FLY_MAXTURN = 45
+FLY_PREFIX = "§c[§5fly.sve§c] "
+
+def: fly(player, speed, checker) {
+
+	def: moveup2(player) {
+		local loc = player.getLocation()
+		loc.setY(loc.getY()+2)
+		player.teleport_Location(loc)
+	}
+
+
+	def: degr_subs(d1, d2) {
+		local sub = abs(d1-d2)
+		if: sub > 90 return abs(min(d1,d2)+360-max(d1,d2))
+		return sub
+	}
+
+	if: !speed speed = 1
+	
+	player = players()[player]
+	
+	player.sendMessage_String(FLY_PREFIX + "§eWelcome to the Flight Simulator.")
+	
+	# enable fly mode
+	player.setAllowFlight(true)
+	
+	# the player has to be on air to fly
+	moveup2(player)
+	player.setFlying(true)
+	
+	local i = 0
+	
+	local direction = player.getLocation()
+	local tim = timer(def {
+		local new_direction = player.getLocation()
+		
+		# custom checker
+		if: checker {
+			if: !checker(players()[player]) {
+				# take fly mode off
+				player.setAllowFlight(false)
+				player.setFlying(false)
+			
+				player.setVelocity(direction.getDirection().multiply_int(3))
+			
+				tim.stop()
+				return nil
+			}
+		}
+		
+		# check for quick turns
+		if: degr_subs(new_direction.getYaw(), direction.getYaw()) > FLY_MAXTURN
+			|| degr_subs(new_direction.getPitch(), direction.getPitch()) > FLY_MAXTURN {
+			player.sendMessage_String(FLY_PREFIX + "§cToo quick turn. Your engines broked.")
+			
+			# take fly mode off
+			player.setAllowFlight(false)
+			player.setFlying(false)
+			
+			player.setVelocity(direction.getDirection().multiply_int(3))
+			
+			tim.stop()
+			
+			return nil
+		}
+		
+		# check if player is on the ground
+		if: i++ > 100 && (player.isOnGround()) {
+			if: new_direction.getPitch() < 30
+				player.sendMessage_String(FLY_PREFIX + "§eYou landed.")
+			else:
+			{
+				player.sendMessage_String(FLY_PREFIX + "§cYou crashed to the ground.")
+				player.setVelocity(player.getLocation().getDirection().multiply_int(3).setY(1))
+			}
+			
+			# take fly mode off
+			player.setAllowFlight(false)
+			player.setFlying(false)
+			
+			tim.stop()
+			
+			return nil
+		}
+		
+		# fly forward
+		player.setVelocity(new_direction.getDirection().multiply_int(speed))
+		player.setFlying(true)
+		direction = new_direction
+	}, 1)
+	return tim
+}
+
+registercommand(:fly, "svefly.fly", def @m->fly())
+registercommand(:quickfly, "svefly.fly", def @m->fly(5))
+<</code>>
+
+=== Usage ===
+To start the flight simulator:
+{{{
+/svecommand fly
+}}}
+To start the fast fly mode:
+{{{
+/svecommand quickfly
+}}}
+Permissions:
+* **svefly.fly** right to fly
+== Voting system ==
+
+vote.sve by fergusq
+
+<<code perl>>
+VOTE_PREFIX = "§a[§3vote.sve§a] §e"
+
+votedesc = nil
+voteAYE = 0
+voteNAY = 0
+voters = 0 # number of players eligible to vote
+voted = 0 # number of players voted
+players_voted = []
+
+def: startvote(desc) {
+	if: votedesc {
+		@m->tell(VOTE_PREFIX + "§cYou must stop the previous vote before starting a new.")
+		return nil
+	}
+	
+	# reset vote
+	votedesc = desc
+	voteAYE = 0
+	voteNAY = 0
+	notvoted = 0
+	players_voted = []
+	
+	# count those who are eligible to vote
+	foreach(@a)::def (p) {
+		if: hasperm(p, "svevote.vote") {
+			voters++
+			players_voted[p] = false
+		}
+	}
+	
+	# inform players about the vote
+	foreach(@a)::def (p) {
+		if: hasperm(p, "svevote.watch") {
+			p->tell(VOTE_PREFIX + "A vote about §f" + desc + "§e begins. Voting time is 2 minits.")
+			p->tell(VOTE_PREFIX + "Use commands §f/svecommand aye§e, §f/svecommand nay")
+			p->tell(VOTE_PREFIX + "and §f/svecommand empty§e to vote.")
+		}
+	}
+	
+	wait(120->ticks, def {
+		# if this is still the same vote
+		if: votedesc == desc
+			endvote()
+	})
+}
+
+def: vote(f) {
+	if: !hasperm(@m, "svevote.vote") {
+		@m->tell(VOTE_PREFIX + "§cYou don't have permission!")
+		return nil
+	}
+	if: !votedesc {
+		@m->tell(VOTE_PREFIX + "§cThere is no ongoing vote.")
+		return nil
+	}
+	if: players_voted[@m] {
+		@m->tell(VOTE_PREFIX + "§cYou've already voted!")
+		return nil
+	}
+	
+	# count vote
+	if: f == :AYE voteAYE++
+	if: f == :NAY voteNAY++
+
+	# mark player
+	players_voted[@m] = true
+	voted++
+	
+	# inform players
+	foreach(@a)::def (p) {
+		if: hasperm(p, "svevote.watch") {
+			p->tell(VOTE_PREFIX + voted + " / " + voters + " votes.")
+		}
+	}
+	
+	# check if vote ends
+	if: voted == voters {
+		endvote()
+	}
+}
+
+def:round(x,d) = floor(x * pow(10,d)) / pow(10,d)
+def:floor(x) = x-x%1
+
+def: endvote() {
+	ayenayvotes=voteAYE+voteNAY
+	
+	# broadcast the result of the vote
+	foreach(@a)::def (p) {
+		if: hasperm(p, "svevote.watch") {
+			p->tell(VOTE_PREFIX + "------------------------")
+			p->tell(VOTE_PREFIX + "Vote: §f" + votedesc)
+			p->tell(VOTE_PREFIX + "AYE §f" + voteAYE + " (" + round(voteAYE/ayenayvotes*100, 1) + "%)")
+			p->tell(VOTE_PREFIX + "NAY §f" + voteNAY + " (" + round(voteNAY/ayenayvotes*100, 1) + "%)")
+			if: voteAYE > voteNAY p->tell(VOTE_PREFIX + "Result §aAYE")
+			if: voteAYE < voteNAY p->tell(VOTE_PREFIX + "Result §cNAY")
+			if: voteAYE == voteNAY p->tell(VOTE_PREFIX + "Result §fnot clear")
+			p->tell(VOTE_PREFIX + "Turnout §f" + round(voted/voters*100, 1) + "%")
+		}
+	}
+	
+	votedesc = nil
+}
+
+registercommand(:aye, "svevote.vote", def vote(:AYE))
+registercommand(:nay, "svevote.vote", def vote(:NAY))
+registercommand(:empy, "svevote.vote", def vote(:EMPTY))
+<</code>>
+
+=== Usage ===
+
+To start a vote:
+{{{
+/sve startvote("vote description")
+}}}
+To end the current vote:
+{{{
+/sve endvote()
+}}}
+To vote:
+{{{
+/svecommand aye
+/svecommand nay
+/svecommand empty
+}}}
+
+Permissions:
+* **svevote.vote** right to vote
+* **svevote.watch** right to see the result of the vote
+
+== Algorithms ==
+
+=== sin ===
+
+sin by CosmoConsole
+<<code perl>>
+def:sin(m,t) { # m = radians 
+ if:!t t=9
+ local v = 0
+ m = r2d(m)
+ while: m < 0 {
+  m = m + 360
+ }
+ local p = 0
+ while: m > 179 {
+  m = m - 180
+  p = p + 1
+ }
+ local b = 1
+ if: p % 2 != 0 b = -1
+ local itern = 0
+ if: m == 0 return 0
+ if: m == 90 return 1 * b
+ m = d2r(m)
+ while: itern<t {
+  local p = pow(-1,itern)
+  local px = pow(m,2*itern+1)
+  local f = factorial(2*itern+1)
+  v = v + p * px / f
+  itern = itern + 1
+ }
+ if: p % 2 != 0 return -v
+ return v
+}
+
+def:r2d(r) {
+ return r*(180/pi)
+}
+def:d2r(d) {
+ return d*(pi/180)
+}
+<</code>>
+
+==== Usage ====
+
+##sin(n)##
+
+Example:
+<<code perl>>
+local sin47 = sin(47)
+<</code>>
+
+=== logn ===
+
+logn by CosmoConsole
+
+<<code perl>>
+_e = 2.71828182846
+
+# x = _e, d = 12
+def:logn(num,x,d) {
+ if: num <= 0
+  return NaN
+ if: !x x=_e
+ if: !d d=12
+ local i = 0
+ while: num < 1 {
+  i = i - 1
+  num = num * x
+ }
+ while: num >= x {
+  i = i + 1
+  num = num / x
+ }
+ local result = i + "."
+ local digit = 0
+ while: d > 0 {
+  num = pow(num,10)
+  digit = 0
+  while: num >= x {
+   digit = digit + 1
+   num = num / x
+  }
+  result = result + digit
+  d = d - 1
+ }
+ return number(result)
+}
+<</code>>
+
+==== Usage ====
+
+##logn(n)##
+
+<<code perl>>
+local n = logn(3)
+<</code>>
+
+== Small scripts ==
+
+=== Torch inserting machine ===
+
+<<code perl>>
+material = static("org.bukkit.Material")
+def: torch(pl) {
+	return timer(def pl.getWorld().getBlockAt(pl.getLocation()).setType(material.TORCH),1)
+}
+<</code>>
+
+==== Usage ====
+
+To start:
+{{{
+/sve tim=torch(@m)
+}}}
+
+To stop:
+{{{
+/sve tim.stop()
+}}}
+
+=== Killing all others in the chunk except you ===
+
+Using following commands you can kill every entity in the chunk except you. The first command searches all entities, the second kills them.
+
+<<code perl>>
+/sve e=@m.world.getChunkAt(@m.getLocation()).getEntities()
+/sve foreach(e)::def(t) if:t!=@m&&defined(t,:setHealth) t.setHealth(0)
+<</code>>
+
+=== Real-time game ===
+
+Synchronize the clock of the server with the clock of the computer. If the clock is 5 PM in the real world, then it is 5 PM in the game too. The day is 12 hours long (as is the night).
+
+<<code perl>>
+
+# the current system time in ticks
+def: inticks {
+	local date = static("java.util.Date").new()
+	local hours = date.getHours()
+	local minutes = date.getMinutes()
+	local seconds = date.getSeconds()
+	local ticks = (hours+42)*1000 + minutes*16.65 + seconds*0.28
+	return ticks
+}
+
+syncworld = "WORLD_NAME"
+
+# if a timer is already running, stop it
+if: defined($,:datetimer) datetimer.stop()
+
+# start a timer
+datetimer = timer(def {
+    worlds()[syncworld].setTime(inticks())
+}, 1)
+<</code>>
